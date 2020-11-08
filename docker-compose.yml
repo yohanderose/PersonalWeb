@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  site:
+    build: ./site
+    volumes:
+      - ./site:/usr/src/app
+    ports:
+      - 80:80
