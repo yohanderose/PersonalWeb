@@ -1,13 +1,9 @@
 version: "3"
 
 services:
-  www.yohanderose.xyz:
+  site:
     build: ./site
     volumes:
       - ./site:/usr/src/app
-    restart: on-failure
-    environment:
-      - VIRTUAL_HOST=www.yohanderose.xyz/me
-      - VIRTUAL_PORT=6549
-      - LETSENCRYPT_HOST=www.yohanderose.xyz
-      - LETSENCRYPT_EMAIL=yohanderose@gmail.com
+    ports:
+      - 6549:6549

@@ -5,12 +5,12 @@ app = Flask(__name__)
 app.secret_key = "blahblah"
 
 
-@app.route('/')
+@app.route('/me')
 def hello_world():
     return render_template('index.html')
 
 
-@app.route('/training')
+@app.route('/me/training')
 def training():
     return render_template('programme.html')
 
