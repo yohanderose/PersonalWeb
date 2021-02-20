@@ -1,37 +1,45 @@
+import sys
 import random
 import pandas as pd
+import datetime
 
 """
 Creates a weight training programme and outputs the schedule as a webpage.
 Uses some start weights for the key movements and a random selection of supplementary exercises week to week.
 Applies an incremental weight increase week to week for key exercises.
 """
+output_path = ""
+if len(sys.argv) < 2:
+    sys.exit("Provide an output path for the programme.")
+else:
+    output_path = sys.argv[-1]
 
-push_exercises = ['dumbbell bench press', 'dumbell military press', 'incline dumbell bench',
-                  'elevated pushup',  'arnold shoulder press', 'tricep throwbacks', 'dips', 'skull crushers']
+push_exercises = ['dumbbell bench press', 'dumbbell military press', 'incline dumbbell bench',
+                  'elevated push-up',  'arnold shoulder press', 'tricep throwbacks', 'dips', 'skull crushers']
 pull_exercises = ['deadlift', 'dumbbell row', 'trap shrugs',
-                  'lat pulldown', 'dumbell curl', 'pull ups']
+                  'lat pulldown', 'dumbbell curl', 'pull ups']
 legs_exercises = ['squat', 'bulgarian one leg', 'dumbbell lunges',
                   'romanian deadlift', 'leg press', 'calf raise', 'quad curl', 'ham curl', ]
 
+WEEKS = 6
+TODAY = datetime.date.today()
 
 bench = 10
-military = 10
-deadlift = 50
+military = 12
+deadlift = 60
 dumbrow = 16
-squat = 40
+squat = 30
 bulgarian = 10
 
 bench_increment = 2
 military_increment = 2
-deadlift_increment = 5
+deadlift_increment = 10
 dumbrow_increment = 2
-squat_increment = 5
+squat_increment = 10
 bulgarian_increment = 2
 
-
 columns = ['WEEK', 'Legs', 'Push', 'Pull']
-weeks = list(range(4))
+weeks = list(range(WEEKS))
 rows = []
 for week in weeks:
     legs = legs_exercises[:2] + random.sample(legs_exercises[2:], 3)
@@ -46,7 +54,7 @@ for week in weeks:
     pull = "- " + "\n- ".join(pull) + "\n"
     pull += "Dead: {}, Dumbrow: {}".format(deadlift + (
         deadlift_increment * week), dumbrow + (dumbrow_increment * week))
-    rows.append([week+1, legs, push, pull])
+    rows.append([str(week+1) + "\n{}".format((TODAY + datetime.timedelta(days=(7*week))).strftime("%d/%m/%Y")), legs, push, pull])
 
 df = pd.DataFrame(data=rows, columns=columns)
 html = """<!DOCTYPE html>
@@ -64,5 +72,10 @@ html = """<!DOCTYPE html>
 </html>
 """.format(df.to_html(index=False, classes='table').replace("\\n", "<br>"))
 
-with open('./templates/programme.html', 'w+') as file:
-    file.write(html)
+try:
+    with open(output_path, 'w+') as file:
+        file.write(html)
+    print("New program created")
+except Exception as e:
+    print(e)
+
